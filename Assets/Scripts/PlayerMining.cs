@@ -5,7 +5,7 @@ public class PlayerMining : MonoBehaviour
     private PlayerControls controls;
     public int Damage = 2;
     public float MiningRange = 5f;
-    private Vector2 MiningInput;
+    private Vector2 MiningInput = new Vector2(0.5f,0.5f);
     public LayerMask OreLayer;
 
     void Awake()
@@ -13,8 +13,6 @@ public class PlayerMining : MonoBehaviour
         controls = new PlayerControls();
 
         controls.Player.Attack.performed += ctx => OnAttack();
-        controls.Player.Look.performed += ctx => MiningInput = ctx.ReadValue<Vector2>();
-        controls.Player.Look.canceled += ctx => MiningInput = Vector2.zero;
     }
     void OnEnable()
     {
@@ -28,7 +26,7 @@ public class PlayerMining : MonoBehaviour
     void OnAttack()
     {
         Debug.Log("좌클릭 입력받음");
-        Ray MiningRay = Camera.main.ScreenPointToRay(MiningInput);
+        Ray MiningRay = Camera.main.ViewportPointToRay(MiningInput); //viewport(0.5f,0.5f)
         RaycastHit[] hits = Physics.RaycastAll(MiningRay, MiningRange, OreLayer);
 
         if (hits.Length > 0)
