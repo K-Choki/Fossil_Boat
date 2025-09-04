@@ -1,12 +1,14 @@
-using UnityEngine;
+    using UnityEngine;
 
 public class PlayerMining : MonoBehaviour
 {
     private PlayerControls controls;
+    private OreScripts ore;
     public int Damage = 2;
     public float MiningRange = 5f;
     private Vector2 MiningInput = new Vector2(0.5f,0.5f);
     public LayerMask OreLayer;
+    
 
     void Awake()
     {
@@ -35,8 +37,16 @@ public class PlayerMining : MonoBehaviour
 
             foreach (RaycastHit hit in hits) // 모든 옵젝을 검사하기!
             {
-                Debug.Log("충돌한 오브젝트: " + hit.collider.gameObject.name);
-                hit.collider.GetComponent<OreScripts>();
+                Debug.Log("충돌한 오브젝트: " + hit.collider.gameObject.name); 
+                ore = hit.collider.GetComponent<OreScripts>();
+                if (hit.collider.CompareTag("Ore"))
+                {
+                    if (ore != null)
+                    {
+                        ore.MineOre(Damage);
+                        Debug.Log("체력 감소, 현재 남은 체력:" + ore.OreHealth + "광물 이름 : " + hit.collider.gameObject.name);
+                    }
+                }
             }
         }
         else
